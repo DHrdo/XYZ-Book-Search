@@ -266,7 +266,6 @@ body .main .search-results .book-card:last-child {
   margin-bottom: 100px;
 }
 body .main .pagination-box {
-  outline: 1px solid blue;
   margin: 0 auto;
   padding: 10px;
   text-align: center;
@@ -275,7 +274,6 @@ body .main .pagination-box {
   margin-top: 5px;
 }
 body .main .pagination-box .btn-prev-pages {
-  outline: 1px solid red;
   width: 23px;
   background-color: none;
   border: none;
@@ -294,7 +292,6 @@ body .main .pagination-box .btn-prev-pages:hover {
   transform: scale(1.2);
 }
 body .main .pagination-box .btn-next-pages {
-  outline: 1px solid red;
   width: 23px;
   background-color: none;
   border: none;
