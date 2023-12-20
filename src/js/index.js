@@ -11,7 +11,7 @@
 // LinkedIn: https://www.linkedin.com/in/denis-accardo-806907135
 // 
 //***********************************************************************************************************/
-   
+
 // Importazione di moduli e risorse necessarie
 import axios from 'axios';  // Utilizzo di axios per effettuare chiamate HTTP
 import '/src/sass/style.scss';  // Importa il foglio di stile Sass
@@ -40,13 +40,12 @@ const MAX_VISIBLE_PAGES = 5;  // Limite di pagine visibili all'utente per la pag
 
 // Ulteriori variabili per la paginazione
 let skipIndex = 0; // Indice di partenza per la paginazione
-let currentPageIndex = 0; // Inizializazione della pagina corrente
+let currentPageIndex = 1; // Inizializazione della pagina corrente
 let IndexScrollPaginationNumbers = 0 // Variabile per controllo del numero delle volte che le viene scorse
 
 let isSearchInProgress = false; // Variabile per controllare se la ricerca è in corso, in modo da non effettuare chiamate sovrapposte
 let isPaginationCreated = false; // Variabile per controllare se la paginazione è stata già creata
 let paginationBox; // Variabile per memorizzare il div della paginazione
-let toDelete
 
 // Funzione per recuperare libri in base all'input dell'utente
 async function fetchBooks(userInput) {
@@ -58,7 +57,9 @@ async function fetchBooks(userInput) {
         getInput = userInput.toLowerCase();
         //console.log(userInput); // DEBUG
 
+        // Se l'oggetto ha già degli elementi allora crea le card dei libri e fetcha le descrizioni
         if (Object.keys(books).length) {
+
             // Ottieni solo gli elementi corrispondenti alla paginazione
             const paginatedBooks = Object.values(books).slice(skipIndex, skipIndex + PAGINATION_LIMIT);
             await createBookCards(PAGINATION_LIMIT, divSearchResults, paginatedBooks);
@@ -66,10 +67,12 @@ async function fetchBooks(userInput) {
 
         } else {
 
+            // Altrimenti, fetcha i libri con dei criteri di ricerca specifici
             const response = await axios.get(`https://openlibrary.org/subjects/${getInput}.json?limit=${BOOKS_LIMIT}&offset=${skipIndex}`);
             const data = response.data;
             isPaginationCreated = false;
 
+            // Rimuove la paginazione creata in precedenza se esiste e reinizializza le variabili di indice
             const pagination = document.querySelector('.pagination-box');
             if (pagination) {
                 pagination.remove();
@@ -79,6 +82,7 @@ async function fetchBooks(userInput) {
 
             console.log(data); // DEBUG
 
+            // Crea un oggetto per memorizzare i dettagli dei libri
             data.works.forEach(async (work, i) => {
                 books[i] = {
                     title: work.title,
@@ -89,9 +93,12 @@ async function fetchBooks(userInput) {
                 }
             });
 
+            // Se non ci sono libri, mostra un messaggio di notifica mediante funzione
             if (data.works.length === 0) {
                 await noBooksFound();
             } else {
+
+                // Altrimenti, crea le card e fetcha le descrizioni dei libri
                 const paginatedBooks = Object.values(books).slice(skipIndex, skipIndex + PAGINATION_LIMIT);
                 await createBookCards(PAGINATION_LIMIT, divSearchResults, Object.values(books).slice(skipIndex, skipIndex + PAGINATION_LIMIT));
                 await fetchForBookDescription(paginatedBooks);
@@ -246,9 +253,6 @@ function scrollpage() {
 }
 
 
-
-
-
 // *** GESTIONE DOM PER LE CARD DEI LIBRI ***----------------------------------------------------------------------------------------------------------------------------
 
 // Funzioni per creare i singoli elementi html appartenenti alla card di ogni libro
@@ -354,11 +358,11 @@ async function createBookCards(element, eParent, books) {
 
 
 
-// *** GESTIONE PAGINAZIONE ***-----------------------------------------------------------------------------------------------------
+// *** GESTIONE PAGINAZIONE ***---------------------------------------------------------------------------------------------------
 
 // Funzione per gestire il cambio di pagine
 function changePagesClick() {
-    let paginationButtons = document.querySelectorAll('.pagination-button');
+     let paginationButtons = document.querySelectorAll('.pagination-button');
 
     // Rimuove gli event listener esistenti
     paginationButtons.forEach(button => {
@@ -373,39 +377,68 @@ function changePagesClick() {
 
 // Crea la paginazione e aggiunge la funzione handlePaginationClick() come event listener
 function createPagination() {
-    let pages = Object.keys(books).length / PAGINATION_LIMIT;
+    let pages = Object.keys(books).length / PAGINATION_LIMIT; // Calcola il numero di pagine totali da creare
     const paginationBox = document.createElement('div');
     paginationBox.className = 'pagination-box';
 
     for (let i = 0; i < pages; i++) {
+        // Crea le prime pagine in base alle pagine totali visualizzabili all'utente nella paginazione (in basso).
         const paginationButton = document.createElement('button');
         paginationButton.className = 'pagination-button';
         paginationButton.textContent = i + 1;
         paginationButton.addEventListener('click', handlePaginationClick);
         paginationBox.appendChild(paginationButton);
 
+        // Se i è uguale al massimo delle pagine (in basso) visibili all'utente && le pagine totali sono superiori alle pagine visibili all'utente 
         if (i === MAX_VISIBLE_PAGES - 1 && pages > MAX_VISIBLE_PAGES) {
             const btnPreviousPages = document.createElement('button');
             btnPreviousPages.className = 'btn-prev-pages';
             btnPreviousPages.textContent = '<';
-            //btnPreviousPages.style.display = 'none';
             paginationBox.insertBefore(btnPreviousPages, paginationBox.firstChild);
 
             const btnNextPages = document.createElement('button');
             btnNextPages.className = 'btn-next-pages';
             btnNextPages.textContent = '>';
             paginationBox.appendChild(btnNextPages);
-            break; // Esce dal ciclo dopo aver aggiunto i puntini
+            break;
         }
     }
     return paginationBox;
 }
 
+function setActiveButton(paginationButtons, currentPageIndex) {
+
+    if (paginationButtons[0].classList.contains('active-button')) {
+        console.log('active button');
+        paginationButtons[0].classList.remove('active-button')
+    }
+
+    paginationButtons.forEach((button, index) => {
+        if (parseInt(button.textContent) === currentPageIndex) {
+            button.classList.add('active-button');
+        } else {
+            button.classList.remove('active-button');
+        }
+    });
+}
+
+function lastPageInFocus(currentPageIndex, index) {
+    console.log('last page in focus', currentPageIndex);
+    const paginationButtons = document.querySelectorAll('.pagination-button');
+
+    if (parseInt(paginationButtons[index].textContent) === currentPageIndex) {
+        paginationButtons[index].classList.add('active-button');
+    }
+}
+
 // Funzione di gestione del click sulla paginazione
-function handlePaginationClick() {
+function handlePaginationClick(event) {
+
     currentPageIndex = parseInt(event.target.textContent);
     skipIndex = (currentPageIndex - 1) * PAGINATION_LIMIT;
 
+    const paginationButtons = document.querySelectorAll('.pagination-button');
+    setActiveButton(paginationButtons, currentPageIndex)
 
     let searchResults = document.querySelector('.search-results');
     searchResults.innerHTML = '';
@@ -446,6 +479,9 @@ function nextPage() {
         if (parseInt(paginationButtons[paginationButtons.length - 1].textContent) === pages) {
             btnNextPages.removeEventListener('click', nextPage); // Rimuove l'event listener dal pulsante "successivo" per disattivarlo quando ha raggiunto l'ultima pagina
         }
+
+        button.classList.remove('active-button');
+        lastPageInFocus(currentPageIndex, index);
     })
 }
 
@@ -468,7 +504,12 @@ function previousPage() {
             IndexScrollPaginationNumbers = 0;
             btnPreviousPages.removeEventListener('click', previousPage); // Rimuove l'event listener dal pulsante "precedente" per disattivarlo quando ha raggiunto la prima pagina
         }
+
+        button.classList.remove('active-button');
+        lastPageInFocus(currentPageIndex, index);
     });
 }
+
+// Se uno dei button (es 16, memorizzato in una variabile) è presente in uno dei 5 button allora gli aggiungo la classe active-button
 
 // -----------------------------------------------------------------------------------------------------------------------------------------

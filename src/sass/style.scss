@@ -99,6 +99,10 @@
     margin-bottom: 30px;
 }
 
+.active-button {
+    background-color: blue !important;
+}
+
 //-----------------------------------------------------------------------------------------------------
 
 //MOBILE FIRST
@@ -264,6 +268,7 @@ body {
                 .book-card-title {
                     color: #222831;
                     margin-top: 10px;
+                    margin-top: 10px;
                     font-size: 1.1em;
                     text-align: center;
                 }
@@ -332,7 +337,7 @@ body {
                 background-color: unset;
                 color: yellow;
                 font-size: 1.2em;
-                font-family: 'SIMPLIFICA', sans-serif,;
+                font-family: 'SIMPLIFICA', sans-serif, ;
                 margin: 0 5px;
 
                 transition: transform .2s;
@@ -392,9 +397,7 @@ body {
                 transform: scale(0.8);
             }
 
-            .pagination-button:focus {
-                background-color: red;
-            }
+
         }
 
     }
