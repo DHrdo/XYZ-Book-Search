@@ -28,7 +28,7 @@ const searchBtn = document.getElementById('search-button');
 // Inizializzazione delle variabili
 //let imagesLoaded = 0;  // Contatore per le immagini di copertina caricate
 let books = {};  // oggetto per memorizzare i dettagli dei libri recuperati
-let currentFocusIndex = -1;  // Indice del libro attualmente in primo piano
+let currentFocusIndex = 0;  // Indice del libro attualmente in primo piano
 
 let getInput = ''; // Variabile globale per memorizzare l'input dell'utente (userinput non poteva essere usata)
 
@@ -345,14 +345,22 @@ async function createBookCards(element, eParent, books) {
         paginationBox = createPagination();
         const main = document.querySelector('.main');
         main.appendChild(paginationBox);
+
+
+        //Imposta il primo pulsante come attivo in modo che venga visualizzato "evidenziata"
+        const paginationButton = document.querySelectorAll('.pagination-button');
+        paginationButton.forEach((button, index) => {
+            if (index === 0) {
+                button.classList.add('active-button');
+            }
+        })
+
         changePagesClick();
-        handlePrevPagesClick()
-        handleNextPagesClick();
     } else {
         changePagesClick();
-        handlePrevPagesClick()
-        handleNextPagesClick();
     }
+    handlePrevPagesClick()
+    handleNextPagesClick();
 }
 // ***----------------------------------------------------------------------------------------------------------------------------
 
@@ -362,7 +370,7 @@ async function createBookCards(element, eParent, books) {
 
 // Funzione per gestire il cambio di pagine
 function changePagesClick() {
-     let paginationButtons = document.querySelectorAll('.pagination-button');
+    let paginationButtons = document.querySelectorAll('.pagination-button');
 
     // Rimuove gli event listener esistenti
     paginationButtons.forEach(button => {
@@ -403,17 +411,22 @@ function createPagination() {
             break;
         }
     }
+
+    let paginationButton = document.querySelectorAll('.pagination-button');
+    currentPageIndex = 1;
+    paginationButton.forEach((button, index) => {
+        if (parseInt(button[0].textContent) === currentPageIndex) {
+            button.classList.add('active-button');
+        }
+    })
+
     return paginationBox;
 }
 
 function setActiveButton(paginationButtons, currentPageIndex) {
 
-    if (paginationButtons[0].classList.contains('active-button')) {
-        console.log('active button');
-        paginationButtons[0].classList.remove('active-button')
-    }
 
-    paginationButtons.forEach((button, index) => {
+    paginationButtons.forEach(button => {
         if (parseInt(button.textContent) === currentPageIndex) {
             button.classList.add('active-button');
         } else {
@@ -433,11 +446,11 @@ function lastPageInFocus(currentPageIndex, index) {
 
 // Funzione di gestione del click sulla paginazione
 function handlePaginationClick(event) {
-
     currentPageIndex = parseInt(event.target.textContent);
     skipIndex = (currentPageIndex - 1) * PAGINATION_LIMIT;
 
     const paginationButtons = document.querySelectorAll('.pagination-button');
+
     setActiveButton(paginationButtons, currentPageIndex)
 
     let searchResults = document.querySelector('.search-results');
@@ -455,10 +468,16 @@ function handlePrevPagesClick() {
 
 // Funzione per gestire il click listener del cambio di pagine successive
 function handleNextPagesClick() {
+    const pages = Math.ceil(Object.keys(books).length / PAGINATION_LIMIT);
+    const paginationButtons = document.querySelectorAll('.pagination-button');
     const btnNextPages = document.querySelector('.btn-next-pages');
 
-    btnNextPages.removeEventListener('click', nextPage);
-    btnNextPages.addEventListener('click', nextPage);
+    if (parseInt(paginationButtons[paginationButtons.length - 1].textContent) === pages) {
+        btnNextPages.removeEventListener('click', nextPage);
+    } else {
+        btnNextPages.addEventListener('click', nextPage);
+    }
+
 }
 
 // Funzione per gestire il cambio di pagine successive
@@ -475,9 +494,10 @@ function nextPage() {
 
     paginationButtons.forEach((button, index) => {
         button.textContent = index + 1 + IndexScrollPaginationNumbers;
-        //const remainingPages = pages - paginationButtons[paginationButtons.length - 1].textContent;
+
+            // Se il numero dell'ultima pagina è superiore alla quantità di pagine totali, rimuove l'event listener in modo che non si possa andare alla pagina successiva
         if (parseInt(paginationButtons[paginationButtons.length - 1].textContent) === pages) {
-            btnNextPages.removeEventListener('click', nextPage); // Rimuove l'event listener dal pulsante "successivo" per disattivarlo quando ha raggiunto l'ultima pagina
+            btnNextPages.removeEventListener('click', nextPage);
         }
 
         button.classList.remove('active-button');
@@ -489,27 +509,27 @@ function nextPage() {
 function previousPage() {
     const btnNextPages = document.querySelector('.btn-next-pages');
     const btnPreviousPages = document.querySelector('.btn-prev-pages');
+
     btnNextPages.addEventListener('click', nextPage); // Aggiunge l'event listener al pulsante "successivo" per RIabilitarlo;
 
     const paginationButtons = document.querySelectorAll('.pagination-button');
 
     IndexScrollPaginationNumbers--;
+    console.log(IndexScrollPaginationNumbers)
+
+    // Se l'index dello scroll delle pagine è inferiore o uguale a 0, rimuove l'event listener in modo che non si possa andare alla pagina 0 
+    if (IndexScrollPaginationNumbers <= 1) {
+        IndexScrollPaginationNumbers = 0;
+        btnPreviousPages.removeEventListener('click', previousPage);
+    }
 
     paginationButtons.forEach((button, index) => {
         button.textContent = index + 1 + IndexScrollPaginationNumbers;
         // Se si torna alla prima pagina, nascondi il pulsante "precedente"
 
-        console.log(IndexScrollPaginationNumbers)
-        if (IndexScrollPaginationNumbers <= 0) {
-            IndexScrollPaginationNumbers = 0;
-            btnPreviousPages.removeEventListener('click', previousPage); // Rimuove l'event listener dal pulsante "precedente" per disattivarlo quando ha raggiunto la prima pagina
-        }
-
         button.classList.remove('active-button');
         lastPageInFocus(currentPageIndex, index);
     });
 }
-
-// Se uno dei button (es 16, memorizzato in una variabile) è presente in uno dei 5 button allora gli aggiungo la classe active-button
 
 // -----------------------------------------------------------------------------------------------------------------------------------------
