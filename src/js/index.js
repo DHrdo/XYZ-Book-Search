@@ -4,7 +4,7 @@
 //
 // Versione: 1.0.8
 // Data di creazione: 2023-12-10
-// Data di ultima modifica: 2023-12-19
+// Data di ultima modifica: 2023-12-23
 // Autore: Denis Accardo
 // GitHub: https://github.com/DHrdo
 // Portfolio: https://dhrdo.github.io
@@ -12,7 +12,8 @@
 // 
 //***********************************************************************************************************/
 
-// Importazione di moduli e risorse necessarie
+// -----------------------------*****IMPORTAZIONE DI MODULI E RISORSE NECESSARIE*****--------------------------------
+
 import axios from 'axios';  // Utilizzo di axios per effettuare chiamate HTTP
 import '/src/sass/style.scss';  // Importa il foglio di stile Sass
 import BACKGROUND_IMG from '/src/images/background.jpg';  // Importa l'immagine di sfondo
@@ -22,10 +23,14 @@ import ERROR_IMAGE from '/src/images/noResults.png';  // Importa l'immagine di s
 const background = document.querySelector('.background');
 background.src = BACKGROUND_IMG;
 
-// Ottenimento del riferimento al pulsante di ricerca e inizializzazione delle variabili
+
+// -----------------------------*****INIZIALIZZAZIONE DELLE VARIABILI*****-------------------------------------------
+
+
+// Ottenimento del riferimento al pulsante di ricerca
 const searchBtn = document.getElementById('search-button');
 
-// Inizializzazione delle variabili
+
 //let imagesLoaded = 0;  // Contatore per le immagini di copertina caricate
 let books = {};  // oggetto per memorizzare i dettagli dei libri recuperati
 let currentFocusIndex = 0;  // Indice del libro attualmente in primo piano
@@ -36,9 +41,9 @@ let getInput = ''; // Variabile globale per memorizzare l'input dell'utente (use
 const BOOKS_LIMIT = 200;  // Limite di libri da recuperare                                     [ ** MODIFICARE SE E' NECESSARIO VARIARE IL LIMITE DI FETCHING DEI LIBRI **]
 const PAGINATION_LIMIT = 10;  // Limite di pagine per la paginazione                           [ ** MODIFICARE SE E' NECESSARIO VARIARE IL LIMITE DI LIBRI PER PAGINA **]
 const MAX_VISIBLE_PAGES = 5;  // Limite di pagine visibili all'utente per la paginazione       [ ** MODIFICARE SE E' NECESSARIO VARIARE IL LIMITE DI PAGINE VISIBILI PRIMA DI SCORRERE CON IL TASTO '>' **]
-// ------------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------------------------
 
-// Ulteriori variabili per la paginazione
+// Variabili globali per la paginazione
 let skipIndex = 0; // Indice di partenza per la paginazione
 let currentPageIndex = 1; // Inizializazione della pagina corrente
 let IndexScrollPaginationNumbers = 0 // Variabile per controllo del numero delle volte che le viene scorse
@@ -243,7 +248,7 @@ searchBtn.addEventListener('click', async () => {
     }
 });
 
-// Funzione per scorrere la pagina a una posizione specifica
+// Funzione per scorrere la pagina a una posizione specifica dopo la ricerca
 function scrollpage() {
     window.scrollTo({
         top: 350,  // Valore specifico per scorrere la pagina
@@ -251,9 +256,13 @@ function scrollpage() {
         behavior: "smooth",
     });
 }
+// ***------------------------------------------------------------------------------------------------------------------------------------------
 
 
-// *** GESTIONE DOM PER LE CARD DEI LIBRI ***----------------------------------------------------------------------------------------------------------------------------
+
+
+
+// *** GESTIONE DOM PER LE CARD DEI LIBRI ***---------------------------------------------------------------------------------------------------
 
 // Funzioni per creare i singoli elementi html appartenenti alla card di ogni libro
 function createCard(className) {
@@ -366,9 +375,11 @@ async function createBookCards(element, eParent, books) {
 
 
 
+
+
 // *** GESTIONE PAGINAZIONE ***---------------------------------------------------------------------------------------------------
 
-// Funzione per gestire il cambio di pagine
+// Funzione per gestire il cambio di pagine al click dei pulsanti (i numeri della paginazione)
 function changePagesClick() {
     let paginationButtons = document.querySelectorAll('.pagination-button');
 
@@ -424,7 +435,6 @@ function createPagination() {
 
     return paginationBox;
 }
-
 
 // Funzione per ottenere il numero dell'ultima pagina in focus
 function lastPageInFocus(paginationButtons, currentPageIndex, index) {
@@ -527,11 +537,6 @@ function previousPage() {
     });
 }
 
-
-
-// -----------------------------------------------------------------------------------------------------------------------------------------
-
-
 // Funzione per illuminare le frecce della paginazione quando la pagina attiva è inferiore o superiore a quelle visualizzate al momento
 function lightArrows(index) {
     const paginationButtons = document.querySelectorAll('.pagination-button');
@@ -551,3 +556,7 @@ function lightArrows(index) {
         nextArrow.style.color = '#00ADB5';
     }
 }
+
+
+
+// -----------------------------------------------------------------------------------------------------------------------------------------
