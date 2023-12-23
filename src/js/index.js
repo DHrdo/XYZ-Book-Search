@@ -378,7 +378,9 @@ function changePagesClick() {
     });
 
     // Aggiunge gli event listener aggiornati
-    paginationButtons.forEach(button => {
+    paginationButtons.forEach((button, index) => {
+        lightArrows(index);
+        lastPageInFocus(paginationButtons, currentPageIndex, index);
         button.addEventListener('click', handlePaginationClick);
     });
 }
@@ -423,35 +425,26 @@ function createPagination() {
     return paginationBox;
 }
 
-function setActiveButton(paginationButtons, currentPageIndex) {
 
-
-    paginationButtons.forEach(button => {
-        if (parseInt(button.textContent) === currentPageIndex) {
-            button.classList.add('active-button');
-        } else {
-            button.classList.remove('active-button');
-        }
-    });
-}
-
-function lastPageInFocus(currentPageIndex, index) {
+// Funzione per ottenere il numero dell'ultima pagina in focus
+function lastPageInFocus(paginationButtons, currentPageIndex, index) {
     console.log('last page in focus', currentPageIndex);
-    const paginationButtons = document.querySelectorAll('.pagination-button');
 
     if (parseInt(paginationButtons[index].textContent) === currentPageIndex) {
         paginationButtons[index].classList.add('active-button');
+    } else {
+        paginationButtons[index].classList.remove('active-button');
     }
+
+    return currentPageIndex;
 }
 
 // Funzione di gestione del click sulla paginazione
-function handlePaginationClick(event) {
+function handlePaginationClick() {
     currentPageIndex = parseInt(event.target.textContent);
     skipIndex = (currentPageIndex - 1) * PAGINATION_LIMIT;
 
     const paginationButtons = document.querySelectorAll('.pagination-button');
-
-    setActiveButton(paginationButtons, currentPageIndex)
 
     let searchResults = document.querySelector('.search-results');
     searchResults.innerHTML = '';
@@ -490,18 +483,19 @@ function nextPage() {
     btnPreviousPages.addEventListener('click', previousPage); // Aggiunge l'event listener al pulsante "precedente" per RIabilitarlo;
 
     IndexScrollPaginationNumbers++;
-    console.log(IndexScrollPaginationNumbers)
+    console.log('IndexScrollPaginationNumbers', IndexScrollPaginationNumbers)
 
     paginationButtons.forEach((button, index) => {
         button.textContent = index + 1 + IndexScrollPaginationNumbers;
 
-            // Se il numero dell'ultima pagina è superiore alla quantità di pagine totali, rimuove l'event listener in modo che non si possa andare alla pagina successiva
+        // Se il numero dell'ultima pagina è superiore alla quantità di pagine totali, rimuove l'event listener in modo che non si possa andare alla pagina successiva
         if (parseInt(paginationButtons[paginationButtons.length - 1].textContent) === pages) {
             btnNextPages.removeEventListener('click', nextPage);
         }
 
         button.classList.remove('active-button');
-        lastPageInFocus(currentPageIndex, index);
+        lastPageInFocus(paginationButtons, currentPageIndex, index);
+        lightArrows(index)
     })
 }
 
@@ -515,10 +509,10 @@ function previousPage() {
     const paginationButtons = document.querySelectorAll('.pagination-button');
 
     IndexScrollPaginationNumbers--;
-    console.log(IndexScrollPaginationNumbers)
+    console.log('IndexScrollPaginationNumbers', IndexScrollPaginationNumbers);
 
     // Se l'index dello scroll delle pagine è inferiore o uguale a 0, rimuove l'event listener in modo che non si possa andare alla pagina 0 
-    if (IndexScrollPaginationNumbers <= 1) {
+    if (IndexScrollPaginationNumbers <= 0) {
         IndexScrollPaginationNumbers = 0;
         btnPreviousPages.removeEventListener('click', previousPage);
     }
@@ -528,8 +522,32 @@ function previousPage() {
         // Se si torna alla prima pagina, nascondi il pulsante "precedente"
 
         button.classList.remove('active-button');
-        lastPageInFocus(currentPageIndex, index);
+        lastPageInFocus(paginationButtons, currentPageIndex, index);
+        lightArrows(index);
     });
 }
 
+
+
 // -----------------------------------------------------------------------------------------------------------------------------------------
+
+
+// Funzione per illuminare le frecce della paginazione quando la pagina attiva è inferiore o superiore a quelle visualizzate al momento
+function lightArrows(index) {
+    const paginationButtons = document.querySelectorAll('.pagination-button');
+    const prevArrow = document.querySelector('.btn-prev-pages');
+    const nextArrow = document.querySelector('.btn-next-pages');
+    const currentPage = lastPageInFocus(paginationButtons, currentPageIndex, index);
+    console.log('currentPage', currentPage);
+    console.log('parseInt(paginationButtons[index].textContent)', parseInt(paginationButtons[0].textContent));
+
+    if (currentPage < parseInt(paginationButtons[0].textContent)) {
+        prevArrow.style.color = 'yellow';
+    }
+    else if (currentPage > parseInt(paginationButtons[paginationButtons.length - 1].textContent)) {
+        nextArrow.style.color = 'yellow';
+    } else {
+        prevArrow.style.color = '#00ADB5';
+        nextArrow.style.color = '#00ADB5';
+    }
+}
