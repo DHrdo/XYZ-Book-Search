@@ -38,7 +38,7 @@
     <a href="https://github.com/DHrdo/XYZ-Book-Search"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/DHrdo/XYZ-Book-Search">View Demo</a>
+    <a href="https://xyz-book-search.vercel.app">View Demo</a>
     ·
     <a href="https://github.com/DHrdo/XYZ-Book-Search/issues">Report Bug</a>
     ·
