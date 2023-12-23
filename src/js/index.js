@@ -30,8 +30,8 @@ background.src = BACKGROUND_IMG;
 // Ottenimento del riferimento al pulsante di ricerca
 const searchBtn = document.getElementById('search-button');
 
-
 //let imagesLoaded = 0;  // Contatore per le immagini di copertina caricate
+
 let books = {};  // oggetto per memorizzare i dettagli dei libri recuperati
 let currentFocusIndex = 0;  // Indice del libro attualmente in primo piano
 
