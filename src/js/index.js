@@ -39,7 +39,7 @@ let getInput = ''; // Variabile globale per memorizzare l'input dell'utente (use
 
 //** SETTINGS DELLA PAGINAZIONE **/
 const BOOKS_LIMIT = 200;  // Limite di libri da recuperare                                     [ ** MODIFICARE SE E' NECESSARIO VARIARE IL LIMITE DI FETCHING DEI LIBRI **]
-const PAGINATION_LIMIT = 10;  // Limite di pagine per la paginazione                           [ ** MODIFICARE SE E' NECESSARIO VARIARE IL LIMITE DI LIBRI PER PAGINA **]
+const PAGINATION_LIMIT = 12;  // Limite di pagine per la paginazione                           [ ** MODIFICARE SE E' NECESSARIO VARIARE IL LIMITE DI LIBRI PER PAGINA **]
 const MAX_VISIBLE_PAGES = 5;  // Limite di pagine visibili all'utente per la paginazione       [ ** MODIFICARE SE E' NECESSARIO VARIARE IL LIMITE DI PAGINE VISIBILI PRIMA DI SCORRERE CON IL TASTO '>' **]
 // -----------------------------------------------------------------------------------------------------------------
 
@@ -215,7 +215,7 @@ searchBtn.addEventListener('click', async () => {
     isSearchInProgress = true;
 
     books = {};
-    
+
     // Pulizia dei risultati di ricerca precedenti
     if (bookCards.length > 0) {
         bookCards.forEach(book => book.remove());
