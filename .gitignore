@@ -3,3 +3,7 @@
 
 # Dependency directories
 node_modules/
+/node_modules
+XYZ-Book-Search/node_modules
+XYZ-Book-Search/node_modules/
+/XYZ-Book-Search/node_modules
