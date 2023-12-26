@@ -368,7 +368,7 @@ async function createBookCards(element, eParent, books) {
     } else {
         changePagesClick();
     }
-    handlePrevPagesClick()
+    handlePrevPagesClick();
     handleNextPagesClick();
 }
 // ***----------------------------------------------------------------------------------------------------------------------------
