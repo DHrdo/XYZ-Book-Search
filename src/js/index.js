@@ -123,7 +123,7 @@ async function fetchBooks(userInput) {
             alert('Something went wrong, please try again later.');
         }
     }
-}
+};
 
 // Funzione per gestire il caso in cui non ci siano libri
 async function noBooksFound() {
@@ -140,7 +140,7 @@ async function noBooksFound() {
     divSearchResults.appendChild(noResultsImage);
 
     scrollpage(); // DEBUG
-}
+};
 
 // Funzione per recuperare descrizioni dei libri quando viene cliccata una scheda libro
 async function fetchForBookDescription(books) {
@@ -183,7 +183,7 @@ async function fetchForBookDescription(books) {
             }
         });
     });
-}
+};
 
 // Funzione per chiudere tutte le descrizioni, tranne quella selezionata
 function closeAllDescriptions(currentFocusIndex) {
@@ -200,7 +200,7 @@ function closeAllDescriptions(currentFocusIndex) {
             descriptionBox.classList.remove('visibility-hidden');
         }
     });
-}
+};
 
 // Event listener per il pulsante di ricerca
 searchBtn.addEventListener('click', async () => {
@@ -215,6 +215,7 @@ searchBtn.addEventListener('click', async () => {
     isSearchInProgress = true;
 
     books = {};
+    
     // Pulizia dei risultati di ricerca precedenti
     if (bookCards.length > 0) {
         bookCards.forEach(book => book.remove());
@@ -255,7 +256,7 @@ function scrollpage() {
         left: 0,
         behavior: "smooth",
     });
-}
+};
 // ***------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -270,7 +271,7 @@ function createCard(className) {
     card.className = className;
 
     return card;
-}
+};
 
 // Aggiunta del titolo della card
 function createCardTitle(books, i, className) {
@@ -279,7 +280,7 @@ function createCardTitle(books, i, className) {
     title.className = className;
 
     return title;
-}
+};
 
 // Aggiunta dell'autore della card
 function createCardAuthor(books, i, className) {
@@ -288,7 +289,7 @@ function createCardAuthor(books, i, className) {
     author.textContent = books[i].author;
 
     return author;
-}
+};
 
 // Aggiunta della copertina della card
 function createCardCover(books, i, className) {
@@ -298,7 +299,7 @@ function createCardCover(books, i, className) {
     cover.className = className;
 
     return cover;
-}
+};
 
 // Aggiunta della box di descrizione
 function createCardDescriptionBox(className) {
@@ -306,7 +307,7 @@ function createCardDescriptionBox(className) {
     descriptionBox.className = className;
 
     return descriptionBox;
-}
+};
 
 // Aggiunta del testo del box della descrizione
 function createCardDescriptionText(className) {
@@ -315,7 +316,7 @@ function createCardDescriptionText(className) {
     descriptionText.className = className;
 
     return descriptionText;
-}
+};
 
 // Funzione per mettere insieme, all'interno della card, i vari elementi creati precedentemente
 async function createBookCards(element, eParent, books) {
@@ -344,7 +345,7 @@ async function createBookCards(element, eParent, books) {
 
             break;
         }
-    }
+    };
 
 
     fetchForBookDescription(books);
@@ -362,7 +363,7 @@ async function createBookCards(element, eParent, books) {
             if (index === 0) {
                 button.classList.add('active-button');
             }
-        })
+        });
 
         changePagesClick();
     } else {
@@ -370,7 +371,7 @@ async function createBookCards(element, eParent, books) {
     }
     handlePrevPagesClick();
     handleNextPagesClick();
-}
+};
 // ***----------------------------------------------------------------------------------------------------------------------------
 
 
@@ -394,7 +395,7 @@ function changePagesClick() {
         lastPageInFocus(paginationButtons, currentPageIndex, index);
         button.addEventListener('click', handlePaginationClick);
     });
-}
+};
 
 // Crea la paginazione e aggiunge la funzione handlePaginationClick() come event listener
 function createPagination() {
@@ -434,7 +435,7 @@ function createPagination() {
     })
 
     return paginationBox;
-}
+};
 
 // Funzione per ottenere il numero dell'ultima pagina in focus
 function lastPageInFocus(paginationButtons, currentPageIndex, index) {
@@ -447,7 +448,7 @@ function lastPageInFocus(paginationButtons, currentPageIndex, index) {
     }
 
     return currentPageIndex;
-}
+};
 
 // Funzione di gestione del click sulla paginazione
 function handlePaginationClick() {
@@ -459,7 +460,7 @@ function handlePaginationClick() {
     let searchResults = document.querySelector('.search-results');
     searchResults.innerHTML = '';
     createBookCards(PAGINATION_LIMIT, searchResults, Object.values(books).slice(skipIndex, skipIndex + PAGINATION_LIMIT));
-}
+};
 
 // Funzione per gestire il click listener del cambio di pagine precedenti
 function handlePrevPagesClick() {
@@ -467,7 +468,7 @@ function handlePrevPagesClick() {
 
     btnPreviousPages.removeEventListener('click', previousPage);
     btnPreviousPages.addEventListener('click', previousPage);
-}
+};
 
 // Funzione per gestire il click listener del cambio di pagine successive
 function handleNextPagesClick() {
@@ -481,7 +482,7 @@ function handleNextPagesClick() {
         btnNextPages.addEventListener('click', nextPage);
     }
 
-}
+};
 
 // Funzione per gestire il cambio di pagine successive
 function nextPage() {
@@ -507,7 +508,7 @@ function nextPage() {
         lastPageInFocus(paginationButtons, currentPageIndex, index);
         lightArrows(index)
     })
-}
+};
 
 // Funzione per gestire il cambio di pagine precedenti
 function previousPage() {
@@ -535,7 +536,7 @@ function previousPage() {
         lastPageInFocus(paginationButtons, currentPageIndex, index);
         lightArrows(index);
     });
-}
+};
 
 // Funzione per illuminare le frecce della paginazione quando la pagina attiva è inferiore o superiore a quelle visualizzate al momento
 function lightArrows(index) {
@@ -555,7 +556,7 @@ function lightArrows(index) {
         prevArrow.style.color = '#00ADB5';
         nextArrow.style.color = '#00ADB5';
     }
-}
+};
 
 
 
