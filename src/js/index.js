@@ -31,8 +31,6 @@ background.src = BACKGROUND_IMG;
 // Ottenimento del riferimento al pulsante di ricerca
 const searchBtn = document.getElementById('search-button');
 
-//let imagesLoaded = 0;  // Contatore per le immagini di copertina caricate
-
 export let books = { };  // oggetto per memorizzare i dettagli dei libri recuperati
 export let currentFocusIndexObj = { currentFocusIndex: 0 };  // Indice del libro attualmente in primo piano
 
@@ -48,13 +46,14 @@ export let skipIndexObj = { skipIndex: 0 }; // Indice di partenza per la paginaz
 export let currentPageIndexObj = { currentPageIndex: 1 }; // Inizializazione della pagina corrente
 export let IndexScrollPaginationNumbersObj = { IndexScrollPaginationNumbers: 0 } // Variabile per controllo del numero delle volte che le viene scorse
 
-export let isSearchInProgress = false; // Variabile per controllare se la ricerca è in corso, in modo da non effettuare chiamate sovrapposte
+let isSearchInProgress = false; // Variabile per controllare se la ricerca è in corso, in modo da non effettuare chiamate sovrapposte
 export let isPaginationCreatedObj = { isPaginationCreated: false }; // Variabile per controllare se la paginazione è stata già creata
 export let paginationBox; // Variabile per memorizzare il div della paginazione
 
 
 // Event listener per il pulsante di ricerca
 searchBtn.addEventListener('click', async () => {
+    console.log('ciao')
     let userInput = document.getElementById('search-city').value;
     let bookCards = document.querySelectorAll('.book-card');
 
@@ -172,11 +171,7 @@ export function createCardDescriptionText(className) {
 // Funzione per mettere insieme, all'interno della card, i vari elementi creati precedentemente
 export async function createBookCards(element, eParent, books) {
 
-    const remainingBooks = BOOKS_LIMIT - skipIndexObj.skipIndex;
-    console.log('remainingBooks', remainingBooks);
-    console.log(skipIndexObj.skipIndex)
-
-    for (let i = 0; i < element; i++) {
+    for (let i = 0; i < element && i < BOOKS_LIMIT; i++) {
 
         const CARD = createCard('book-card');
         const CARD_TITLE = createCardTitle(books, i, 'book-card-title');
@@ -193,7 +188,7 @@ export async function createBookCards(element, eParent, books) {
         // Quando si raggiunge il limite di elementi per la prima pagina, crea più pagine
 
         if (i === PAGINATION_LIMIT - 1) {
-            console.log('i === PAGINATION_LIMIT - 1');
+
             break;
         }
     };

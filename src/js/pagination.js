@@ -61,7 +61,6 @@ export function createPagination() {
 
 // Funzione per ottenere il numero dell'ultima pagina in focus
 export function lastPageInFocus(paginationButtons, currentPageIndex, index) {
-    console.log('last page in focus', currentPageIndexObj.currentPageIndex);
 
     if (parseInt(paginationButtons[index].textContent) === currentPageIndexObj.currentPageIndex) {
         paginationButtons[index].classList.add('active-button');
@@ -116,7 +115,6 @@ export function nextPage() {
     btnPreviousPages.addEventListener('click', previousPage); // Aggiunge l'event listener al pulsante "precedente" per RIabilitarlo;
 
     IndexScrollPaginationNumbersObj.IndexScrollPaginationNumbers++;
-    console.log('IndexScrollPaginationNumbers', IndexScrollPaginationNumbersObj.IndexScrollPaginationNumbers)
 
     paginationButtons.forEach((button, index) => {
         button.textContent = index + 1 + IndexScrollPaginationNumbersObj.IndexScrollPaginationNumbers;
@@ -142,7 +140,6 @@ export function previousPage() {
     const paginationButtons = document.querySelectorAll('.pagination-button');
 
     IndexScrollPaginationNumbersObj.IndexScrollPaginationNumbers--;
-    console.log('IndexScrollPaginationNumbers', IndexScrollPaginationNumbersObj.IndexScrollPaginationNumbers);
 
     // Se l'index dello scroll delle pagine è inferiore o uguale a 0, rimuove l'event listener in modo che non si possa andare alla pagina 0 
     if (IndexScrollPaginationNumbersObj.IndexScrollPaginationNumbers <= 0) {
@@ -166,8 +163,6 @@ export function lightArrows(index) {
     const prevArrow = document.querySelector('.btn-prev-pages');
     const nextArrow = document.querySelector('.btn-next-pages');
     const currentPage = lastPageInFocus(paginationButtons, currentPageIndexObj.currentPageIndex, index);
-    console.log('currentPage', currentPage);
-    console.log('parseInt(paginationButtons[index].textContent)', parseInt(paginationButtons[0].textContent));
 
     if (currentPage < parseInt(paginationButtons[0].textContent)) {
         prevArrow.style.color = 'yellow';

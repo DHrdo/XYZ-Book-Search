@@ -10,15 +10,13 @@ export async function fetchBooks(userInput) {
     divSearchResults.innerHTML = '';
 
     try {
-        //console.log(userInput); // DEBUG
 
         // Se l'oggetto ha già degli elementi allora crea le card dei libri e fetcha le descrizioni
         if (Object.keys(books).length) {
 
             // Ottieni solo gli elementi corrispondenti alla paginazione
-            const paginatedBooks = Object.values(books).slice(skipIndexObj.skipIndex, skipIndexObj.skipIndex + PAGINATION_LIMIT);
-            await createBookCards(PAGINATION_LIMIT, divSearchResults, paginatedBooks);
-            await fetchForBookDescription(paginatedBooks);
+            await createBookCards(PAGINATION_LIMIT, divSearchResults, Object.values(books).slice(skipIndexObj.skipIndex, skipIndexObj.skipIndex + PAGINATION_LIMIT));
+            await fetchForBookDescription(Object.values(books).slice(skipIndexObj.skipIndex, skipIndexObj.skipIndex + PAGINATION_LIMIT));
 
         } else {
 
@@ -29,7 +27,6 @@ export async function fetchBooks(userInput) {
 
             // Rimuove la paginazione creata in precedenza se esiste e reinizializza le variabili di indice
             const pagination = document.querySelector('.pagination-box');
-            console.log('pagination', pagination);
             if (pagination) {
                 pagination.remove();
                 IndexScrollPaginationNumbersObj.IndexScrollPaginationNumbers = 0;
@@ -55,11 +52,8 @@ export async function fetchBooks(userInput) {
             } else {
 
                 // Altrimenti, crea le card e fetcha le descrizioni dei libri
-                const paginatedBooks = Object.values(books).slice(skipIndexObj.skipIndex, skipIndexObj.skipIndex + PAGINATION_LIMIT);
-                console.log('paginatedBooks', paginatedBooks)
-                console.log('CHIAMANDO createBookCards');
                 await createBookCards(PAGINATION_LIMIT, divSearchResults, Object.values(books).slice(skipIndexObj.skipIndex, skipIndexObj.skipIndex + PAGINATION_LIMIT));
-                await fetchForBookDescription(paginatedBooks);
+                await fetchForBookDescription(Object.values(books).slice(skipIndexObj.skipIndex, skipIndexObj.skipIndex + PAGINATION_LIMIT));
             }
         }
     } catch (error) {
@@ -112,7 +106,6 @@ export async function fetchForBookDescription(books) {
                     const data = response.data;
 
                     if (!data.description) {
-                        console.log('No description available.'); // DEBUG
                         pDescription.textContent = 'No description available.';
                         descriptionBox.classList.add('slide-bottom', 'description-background');
                         closeAllDescriptions(currentFocusIndexObj.currentFocusIndex);
