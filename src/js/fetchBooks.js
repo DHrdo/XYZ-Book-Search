@@ -1,43 +1,61 @@
 import axios from 'axios';  // Utilizzo di axios per effettuare chiamate HTTP
 import ERROR_IMAGE from '/src/images/noResults.png';  // Importa l'immagine di sfondo
-import { books, PAGINATION_LIMIT, BOOKS_LIMIT, skipIndexObj, isPaginationCreatedObj, createBookCards, IndexScrollPaginationNumbersObj, currentPageIndexObj, currentFocusIndexObj } from './index';
+import { scrollpage } from './index';
+import { BOOKS_LIMIT, createBookCards } from './createBookCards';
+import { PAGINATION_LIMIT, setIndexScrollPaginationNumbers, setCurrentPageIndex } from "./pagination";
+
+export let books = {};  // oggetto per memorizzare i dettagli dei libri recuperati
+export function setBooks(newBooks) { books = newBooks };
+export function getBooks() { return books };
+
+export let skipIndex = 0; // Indice di partenza per la paginazione
+export function setSkipIndex(newSkipIndex) { skipIndex = newSkipIndex };
+export function getSkipIndex() { return skipIndex };
+
+export let isPaginationCreated = false; // Variabile per controllare se la paginazione è stata già creata
+export function setIsPaginationCreated(newIsPaginationCreated) { isPaginationCreated = newIsPaginationCreated };
+export function getIsPaginationCreated() { return isPaginationCreated };
+
+export let currentFocusIndex = 0;  // Indice del libro attualmente in primo piano
+export function getCurrentFocusIndex() { return currentFocusIndex };
+export function setCurrentFocusIndex(newCurrentFocusIndex) { currentFocusIndex = newCurrentFocusIndex };
 
 
 // Funzione per recuperare libri in base all'input dell'utente
 export async function fetchBooks(userInput) {
     const divSearchResults = document.querySelector('.search-results');
-    Object.assign({}, books);
+    Object.assign({}, getBooks());
     divSearchResults.innerHTML = '';
 
     try {
 
         // Se l'oggetto ha già degli elementi allora crea le card dei libri e fetcha le descrizioni
-        if (Object.keys(books).length) {
+        if (Object.keys(getBooks()).length) {
 
             // Ottieni solo gli elementi corrispondenti alla paginazione
-            await createBookCards(PAGINATION_LIMIT, divSearchResults, Object.values(books).slice(skipIndexObj.skipIndex, skipIndexObj.skipIndex + PAGINATION_LIMIT));
-            await fetchForBookDescription(Object.values(books).slice(skipIndexObj.skipIndex, skipIndexObj.skipIndex + PAGINATION_LIMIT));
+            await createBookCards(PAGINATION_LIMIT, divSearchResults, Object.values(getBooks()).slice(getSkipIndex(), getSkipIndex() + PAGINATION_LIMIT));
+            await fetchForBookDescription(Object.values(getBooks()).slice(getSkipIndex(), getSkipIndex() + PAGINATION_LIMIT));
 
         } else {
 
             // Altrimenti, fetcha i libri con dei criteri di ricerca specifici
-            const response = await axios.get(`https://openlibrary.org/subjects/${userInput}.json?limit=${BOOKS_LIMIT}&offset=${skipIndexObj.skipIndex}`);
+            const response = await axios.get(`https://openlibrary.org/subjects/${userInput}.json?limit=${BOOKS_LIMIT}&offset=${getSkipIndex()}`);
             const data = response.data;
-            isPaginationCreatedObj.isPaginationCreated = false;
+            isPaginationCreated = false;
 
             // Rimuove la paginazione creata in precedenza se esiste e reinizializza le variabili di indice
             const pagination = document.querySelector('.pagination-box');
             if (pagination) {
                 pagination.remove();
-                IndexScrollPaginationNumbersObj.IndexScrollPaginationNumbers = 0;
-                currentPageIndexObj.currentPageIndex = 0;
+                setIndexScrollPaginationNumbers(0);
+                setCurrentPageIndex(0);
             }
 
             console.log(data); // DEBUG
 
             // Crea un oggetto per memorizzare i dettagli dei libri
             data.works.forEach(async (work, i) => {
-                books[i] = {
+                getBooks()[i] = {
                     title: work.title,
                     author: work.authors[0] ? work.authors[0].name : 'No authors available',
                     cover_id: work.cover_id,
@@ -52,8 +70,8 @@ export async function fetchBooks(userInput) {
             } else {
 
                 // Altrimenti, crea le card e fetcha le descrizioni dei libri
-                await createBookCards(PAGINATION_LIMIT, divSearchResults, Object.values(books).slice(skipIndexObj.skipIndex, skipIndexObj.skipIndex + PAGINATION_LIMIT));
-                await fetchForBookDescription(Object.values(books).slice(skipIndexObj.skipIndex, skipIndexObj.skipIndex + PAGINATION_LIMIT));
+                await createBookCards(PAGINATION_LIMIT, divSearchResults, Object.values(getBooks()).slice(getSkipIndex(), getSkipIndex() + PAGINATION_LIMIT));
+                await fetchForBookDescription(Object.values(getBooks()).slice(getSkipIndex(), getSkipIndex() + PAGINATION_LIMIT));
             }
         }
     } catch (error) {
@@ -71,6 +89,7 @@ export async function fetchBooks(userInput) {
         }
     }
 };
+
 
 // Funzione per gestire il caso in cui non ci siano libri
 export async function noBooksFound() {
@@ -96,7 +115,7 @@ export async function fetchForBookDescription(books) {
         book.addEventListener('click', async () => {
             const descriptionBox = book.querySelector('.description-box');
             const pDescription = book.querySelector('.description-text');
-            currentFocusIndexObj.currentFocusIndex = index;
+            setCurrentFocusIndex(index);
             // Verifica se la descrizione è già stata recuperata
             const key = books[index].book_key;
             if (!books[index].fetchingDescriptionSate) {
@@ -106,9 +125,10 @@ export async function fetchForBookDescription(books) {
                     const data = response.data;
 
                     if (!data.description) {
+                        console.log('No description available.'); // DEBUG
                         pDescription.textContent = 'No description available.';
                         descriptionBox.classList.add('slide-bottom', 'description-background');
-                        closeAllDescriptions(currentFocusIndexObj.currentFocusIndex);
+                        closeAllDescriptions(getCurrentFocusIndex());
                         return;
                     } else {
                         // Aggiornamento della descrizione nel DOM
@@ -117,14 +137,14 @@ export async function fetchForBookDescription(books) {
 
                         // Aggiunta di stili per mostrare la casella delle descrizioni
                         descriptionBox.classList.add('slide-bottom', 'description-background', 'overflow-scroll');
-                        closeAllDescriptions(currentFocusIndexObj.currentFocusIndex);
+                        closeAllDescriptions(getCurrentFocusIndex());
                     }
                 }
                 catch (error) {
                     console.error(error);
                 }
             } else {
-                closeAllDescriptions(currentFocusIndexObj.currentFocusIndex);
+                closeAllDescriptions(getCurrentFocusIndex());
                 return;
             }
         });
@@ -132,11 +152,11 @@ export async function fetchForBookDescription(books) {
 };
 
 // Funzione per chiudere tutte le descrizioni, tranne quella selezionata
-export function closeAllDescriptions(currentFocusIndexObj) {
+export function closeAllDescriptions(currentFocusIndex) {
     const books = document.querySelectorAll('.book-card');
     books.forEach((book, descriptionIndex) => {
         const descriptionBox = book.querySelector('.description-box');
-        if (descriptionIndex !== currentFocusIndexObj.currentFocusIndex) {
+        if (descriptionIndex !== currentFocusIndex) {
             // Nasconde le descrizioni non selezionate
             descriptionBox.classList.remove('slide-bottom', 'description-background', 'overflow-scroll');
             descriptionBox.classList.add('visibility-hidden');

@@ -1,5 +1,27 @@
-import { books, PAGINATION_LIMIT, MAX_VISIBLE_PAGES, currentPageIndexObj, skipIndexObj, createBookCards, IndexScrollPaginationNumbersObj } from './index.js';
+import { getBooks, getSkipIndex, setSkipIndex } from "./fetchBooks";
+import { createBookCards } from "./createBookCards";
 
+export const PAGINATION_LIMIT = 12;  // Limite di pagine per la paginazione                           [ ** MODIFICARE SE E' NECESSARIO VARIARE IL LIMITE DI LIBRI PER PAGINA **]
+export const MAX_VISIBLE_PAGES = 5;  // Limite di pagine visibili all'utente per la paginazione       [ ** MODIFICARE SE E' NECESSARIO VARIARE IL LIMITE DI PAGINE VISIBILI PRIMA DI SCORRERE CON IL TASTO '>' **]
+export let currentPageIndex = 1; // Inizializazione della pagina corrente
+export let IndexScrollPaginationNumbers = 0 // Variabile per controllo del numero delle volte che le viene scorse
+
+
+export function getIndexScrollPaginationNumbers() {
+    return IndexScrollPaginationNumbers;
+};
+
+export function setIndexScrollPaginationNumbers(number) {
+    IndexScrollPaginationNumbers = number;
+}
+
+export function getCurrentPageIndex() {
+    return currentPageIndex;
+};
+
+export function setCurrentPageIndex(number) {
+    currentPageIndex = number;
+}
 // *** GESTIONE PAGINAZIONE ***---------------------------------------------------------------------------------------------------
 
 // Funzione per gestire il cambio di pagine al click dei pulsanti (i numeri della paginazione)
@@ -14,14 +36,14 @@ export function changePagesClick() {
     // Aggiunge gli event listener aggiornati
     paginationButtons.forEach((button, index) => {
         lightArrows(index);
-        lastPageInFocus(paginationButtons, currentPageIndexObj.currentPageIndex, index);
+        lastPageInFocus(paginationButtons, getCurrentPageIndex(), index);
         button.addEventListener('click', handlePaginationClick);
     });
 };
 
 // Crea la paginazione e aggiunge la funzione handlePaginationClick() come event listener
 export function createPagination() {
-    let pages = Object.keys(books).length / PAGINATION_LIMIT; // Calcola il numero di pagine totali da creare
+    let pages = Object.keys(getBooks()).length / PAGINATION_LIMIT; // Calcola il numero di pagine totali da creare
     const paginationBox = document.createElement('div');
     paginationBox.className = 'pagination-box';
 
@@ -49,9 +71,9 @@ export function createPagination() {
     }
 
     let paginationButton = document.querySelectorAll('.pagination-button');
-    currentPageIndexObj.currentPageIndex = 1;
+    setCurrentPageIndex(1);
     paginationButton.forEach((button, index) => {
-        if (parseInt(button[0].textContent) === currentPageIndexObj.currentPageIndex) {
+        if (parseInt(button[0].textContent) === getCurrentPageIndex()) {
             button.classList.add('active-button');
         }
     })
@@ -61,26 +83,27 @@ export function createPagination() {
 
 // Funzione per ottenere il numero dell'ultima pagina in focus
 export function lastPageInFocus(paginationButtons, currentPageIndex, index) {
+    console.log('last page in focus', currentPageIndex);
 
-    if (parseInt(paginationButtons[index].textContent) === currentPageIndexObj.currentPageIndex) {
+    if (parseInt(paginationButtons[index].textContent) === currentPageIndex) {
         paginationButtons[index].classList.add('active-button');
     } else {
         paginationButtons[index].classList.remove('active-button');
     }
 
-    return currentPageIndexObj.currentPageIndex;
+    return currentPageIndex;
 };
 
 // Funzione di gestione del click sulla paginazione
 export function handlePaginationClick() {
-    currentPageIndexObj.currentPageIndex = parseInt(event.target.textContent);
-    skipIndexObj.skipIndex = (currentPageIndexObj.currentPageIndex - 1) * PAGINATION_LIMIT;
+    setCurrentPageIndex(parseInt(event.target.textContent));
+    setSkipIndex((getCurrentPageIndex() - 1) * PAGINATION_LIMIT);
 
     const paginationButtons = document.querySelectorAll('.pagination-button');
 
     let searchResults = document.querySelector('.search-results');
     searchResults.innerHTML = '';
-    createBookCards(PAGINATION_LIMIT, searchResults, Object.values(books).slice(skipIndexObj.skipIndex, skipIndexObj.skipIndex + PAGINATION_LIMIT));
+    createBookCards(PAGINATION_LIMIT, searchResults, Object.values(getBooks()).slice(getSkipIndex(), getSkipIndex() + PAGINATION_LIMIT));
 };
 
 // Funzione per gestire il click listener del cambio di pagine precedenti
@@ -93,7 +116,7 @@ export function handlePrevPagesClick() {
 
 // Funzione per gestire il click listener del cambio di pagine successive
 export function handleNextPagesClick() {
-    const pages = Math.ceil(Object.keys(books).length / PAGINATION_LIMIT);
+    const pages = Math.ceil(Object.keys(getBooks()).length / PAGINATION_LIMIT);
     const paginationButtons = document.querySelectorAll('.pagination-button');
     const btnNextPages = document.querySelector('.btn-next-pages');
 
@@ -107,17 +130,24 @@ export function handleNextPagesClick() {
 
 // Funzione per gestire il cambio di pagine successive
 export function nextPage() {
-    const pages = Math.ceil(Object.keys(books).length / PAGINATION_LIMIT);
+    const pages = Math.ceil(Object.keys(getBooks()).length / PAGINATION_LIMIT);
+    console.log('pages', pages);
     const btnNextPages = document.querySelector('.btn-next-pages');
     const btnPreviousPages = document.querySelector('.btn-prev-pages');
     const paginationButtons = document.querySelectorAll('.pagination-button');
 
     btnPreviousPages.addEventListener('click', previousPage); // Aggiunge l'event listener al pulsante "precedente" per RIabilitarlo;
 
-    IndexScrollPaginationNumbersObj.IndexScrollPaginationNumbers++;
+
+    let updateScrollNumbers = getIndexScrollPaginationNumbers();
+    updateScrollNumbers++;
+    setIndexScrollPaginationNumbers(updateScrollNumbers);
+
+
+    console.log('IndexScrollPaginationNumbers', getIndexScrollPaginationNumbers());
 
     paginationButtons.forEach((button, index) => {
-        button.textContent = index + 1 + IndexScrollPaginationNumbersObj.IndexScrollPaginationNumbers;
+        button.textContent = index + 1 + getIndexScrollPaginationNumbers();
 
         // Se il numero dell'ultima pagina è superiore alla quantità di pagine totali, rimuove l'event listener in modo che non si possa andare alla pagina successiva
         if (parseInt(paginationButtons[paginationButtons.length - 1].textContent) === pages) {
@@ -125,13 +155,13 @@ export function nextPage() {
         }
 
         button.classList.remove('active-button');
-        lastPageInFocus(paginationButtons, currentPageIndexObj.currentPageIndex, index);
+        lastPageInFocus(paginationButtons, getCurrentPageIndex(), index);
         lightArrows(index)
     })
 };
 
 // Funzione per gestire il cambio di pagine precedenti
-export function previousPage() {
+function previousPage() {
     const btnNextPages = document.querySelector('.btn-next-pages');
     const btnPreviousPages = document.querySelector('.btn-prev-pages');
 
@@ -139,20 +169,24 @@ export function previousPage() {
 
     const paginationButtons = document.querySelectorAll('.pagination-button');
 
-    IndexScrollPaginationNumbersObj.IndexScrollPaginationNumbers--;
+    let updateScrollNumbers = getIndexScrollPaginationNumbers();
+    updateScrollNumbers--;
+    setIndexScrollPaginationNumbers(updateScrollNumbers);
+
+    console.log('IndexScrollPaginationNumbers', getIndexScrollPaginationNumbers());
 
     // Se l'index dello scroll delle pagine è inferiore o uguale a 0, rimuove l'event listener in modo che non si possa andare alla pagina 0 
-    if (IndexScrollPaginationNumbersObj.IndexScrollPaginationNumbers <= 0) {
-        IndexScrollPaginationNumbersObj.IndexScrollPaginationNumbers = 0;
+    if (getIndexScrollPaginationNumbers() <= 0) {
+        setIndexScrollPaginationNumbers(0);
         btnPreviousPages.removeEventListener('click', previousPage);
     }
 
     paginationButtons.forEach((button, index) => {
-        button.textContent = index + 1 + IndexScrollPaginationNumbersObj.IndexScrollPaginationNumbers;
+        button.textContent = index + 1 + getIndexScrollPaginationNumbers();
         // Se si torna alla prima pagina, nascondi il pulsante "precedente"
 
         button.classList.remove('active-button');
-        lastPageInFocus(paginationButtons, currentPageIndexObj.currentPageIndex, index);
+        lastPageInFocus(paginationButtons, getCurrentPageIndex(), index);
         lightArrows(index);
     });
 };
@@ -162,7 +196,9 @@ export function lightArrows(index) {
     const paginationButtons = document.querySelectorAll('.pagination-button');
     const prevArrow = document.querySelector('.btn-prev-pages');
     const nextArrow = document.querySelector('.btn-next-pages');
-    const currentPage = lastPageInFocus(paginationButtons, currentPageIndexObj.currentPageIndex, index);
+    const currentPage = lastPageInFocus(paginationButtons, getCurrentPageIndex(), index);
+    console.log('currentPage', currentPage);
+    console.log('parseInt(paginationButtons[index].textContent)', parseInt(paginationButtons[0].textContent));
 
     if (currentPage < parseInt(paginationButtons[0].textContent)) {
         prevArrow.style.color = 'yellow';
@@ -174,7 +210,3 @@ export function lightArrows(index) {
         nextArrow.style.color = '#00ADB5';
     }
 };
-
-
-
-// -----------------------------------------------------------------------------------------------------------------------------------------

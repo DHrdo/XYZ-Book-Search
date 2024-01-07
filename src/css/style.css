@@ -94,6 +94,11 @@
   margin-bottom: 30px;
 }
 
+.active-button {
+  border: 2px solid yellow !important;
+  color: black !important;
+}
+
 body {
   background-color: #222831;
 }
@@ -226,6 +231,7 @@ body .main .search-results .book-card {
 body .main .search-results .book-card .book-card-title {
   color: #222831;
   margin-top: 10px;
+  margin-top: 10px;
   font-size: 1.1em;
   text-align: center;
 }
@@ -326,9 +332,6 @@ body .main .pagination-box .pagination-button:hover {
 }
 body .main .pagination-box .pagination-button:active {
   transform: scale(0.8);
-}
-body .main .pagination-box .pagination-button:focus {
-  background-color: red;
 }
 body .footer {
   width: 100%;

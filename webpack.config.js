@@ -17,12 +17,7 @@ const config = {
         maxEntrypointSize: 512000,
         maxAssetSize: 512000
     },
-    entry: {
-        index:'./src/js/index.js',
-        pagination:'./src/js/pagination.js',
-        fetchBooks:'./src/js/fetchBooks.js',
-        createBooks:'./src/js/createBooks.js'
-    }, 
+    entry: ['./src/js/index.js', './src/js/pagination.js', './src/js/fetchBooks.js', './src/js/createBookCards.js'],
     output: {
         path: path.resolve(__dirname, 'dist'),
         clean: true
