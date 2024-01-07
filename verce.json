@@ -1,0 +1,12 @@
+{
+    "builds": [
+      { "src": "package.json", "use": "@vercel/node" },
+      { "src": "public/**", "use": "@vercel/static" },
+      { "src": "api/**", "use": "@vercel/node" },
+      { "src": "vercel-build.js", "use": "@vercel/node" },
+      { "src": "vercel-build.sh", "use": "@vercel/node" },
+      { "src": "vercel-build.command", "use": "@vercel/node" },
+      { "src": "vercel-build.bat", "use": "@vercel/node" }
+    ],
+    "version": 2
+  }
