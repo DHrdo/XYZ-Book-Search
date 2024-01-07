@@ -63,8 +63,6 @@ function createCardDescriptionText(className) {
 export async function createBookCards(element, eParent, newBooks) {
 
     const remainingBooks = BOOKS_LIMIT - getSkipIndex();
-    console.log(remainingBooks);
-    console.log(getSkipIndex())
 
     for (let i = 0; i < element && i < remainingBooks; i++) {
 

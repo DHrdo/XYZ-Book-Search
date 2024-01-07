@@ -83,7 +83,6 @@ export function createPagination() {
 
 // Funzione per ottenere il numero dell'ultima pagina in focus
 export function lastPageInFocus(paginationButtons, currentPageIndex, index) {
-    console.log('last page in focus', currentPageIndex);
 
     if (parseInt(paginationButtons[index].textContent) === currentPageIndex) {
         paginationButtons[index].classList.add('active-button');
@@ -131,7 +130,6 @@ export function handleNextPagesClick() {
 // Funzione per gestire il cambio di pagine successive
 export function nextPage() {
     const pages = Math.ceil(Object.keys(getBooks()).length / PAGINATION_LIMIT);
-    console.log('pages', pages);
     const btnNextPages = document.querySelector('.btn-next-pages');
     const btnPreviousPages = document.querySelector('.btn-prev-pages');
     const paginationButtons = document.querySelectorAll('.pagination-button');
@@ -144,7 +142,6 @@ export function nextPage() {
     setIndexScrollPaginationNumbers(updateScrollNumbers);
 
 
-    console.log('IndexScrollPaginationNumbers', getIndexScrollPaginationNumbers());
 
     paginationButtons.forEach((button, index) => {
         button.textContent = index + 1 + getIndexScrollPaginationNumbers();
@@ -173,7 +170,6 @@ function previousPage() {
     updateScrollNumbers--;
     setIndexScrollPaginationNumbers(updateScrollNumbers);
 
-    console.log('IndexScrollPaginationNumbers', getIndexScrollPaginationNumbers());
 
     // Se l'index dello scroll delle pagine è inferiore o uguale a 0, rimuove l'event listener in modo che non si possa andare alla pagina 0 
     if (getIndexScrollPaginationNumbers() <= 0) {
@@ -197,8 +193,6 @@ export function lightArrows(index) {
     const prevArrow = document.querySelector('.btn-prev-pages');
     const nextArrow = document.querySelector('.btn-next-pages');
     const currentPage = lastPageInFocus(paginationButtons, getCurrentPageIndex(), index);
-    console.log('currentPage', currentPage);
-    console.log('parseInt(paginationButtons[index].textContent)', parseInt(paginationButtons[0].textContent));
 
     if (currentPage < parseInt(paginationButtons[0].textContent)) {
         prevArrow.style.color = 'yellow';

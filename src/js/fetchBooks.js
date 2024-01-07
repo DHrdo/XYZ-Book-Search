@@ -51,7 +51,7 @@ export async function fetchBooks(userInput) {
                 setCurrentPageIndex(0);
             }
 
-            console.log(data); // DEBUG
+            //console.log(data); // DEBUG
 
             // Crea un oggetto per memorizzare i dettagli dei libri
             data.works.forEach(async (work, i) => {
@@ -125,7 +125,7 @@ export async function fetchForBookDescription(books) {
                     const data = response.data;
 
                     if (!data.description) {
-                        console.log('No description available.'); // DEBUG
+
                         pDescription.textContent = 'No description available.';
                         descriptionBox.classList.add('slide-bottom', 'description-background');
                         closeAllDescriptions(getCurrentFocusIndex());
