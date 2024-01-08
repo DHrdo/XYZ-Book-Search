@@ -7,15 +7,12 @@ import { PAGINATION_LIMIT, setIndexScrollPaginationNumbers, setCurrentPageIndex 
 export let books = {};  // oggetto per memorizzare i dettagli dei libri recuperati
 export function setBooks(newBooks) { books = newBooks };
 export function getBooks() { return books };
-
 export let skipIndex = 0; // Indice di partenza per la paginazione
 export function setSkipIndex(newSkipIndex) { skipIndex = newSkipIndex };
 export function getSkipIndex() { return skipIndex };
-
 export let isPaginationCreated = false; // Variabile per controllare se la paginazione è stata già creata
 export function setIsPaginationCreated(newIsPaginationCreated) { isPaginationCreated = newIsPaginationCreated };
 export function getIsPaginationCreated() { return isPaginationCreated };
-
 export let currentFocusIndex = 0;  // Indice del libro attualmente in primo piano
 export function getCurrentFocusIndex() { return currentFocusIndex };
 export function setCurrentFocusIndex(newCurrentFocusIndex) { currentFocusIndex = newCurrentFocusIndex };
