@@ -27,6 +27,8 @@ export async function fetchBooks(userInput) {
     Object.assign({}, getBooks());
     divSearchResults.innerHTML = '';
 
+    let getInput = userInput.toLowerCase().trim();
+
     try {
 
         // Se l'oggetto ha già degli elementi allora crea le card dei libri e fetcha le descrizioni
@@ -39,7 +41,7 @@ export async function fetchBooks(userInput) {
         } else {
 
             // Altrimenti, fetcha i libri con dei criteri di ricerca specifici
-            const response = await axios.get(`https://openlibrary.org/subjects/${userInput}.json?limit=${BOOKS_LIMIT}&offset=${getSkipIndex()}`);
+            const response = await axios.get(`https://openlibrary.org/subjects/${getInput}.json?limit=${BOOKS_LIMIT}&offset=${getSkipIndex()}`);
             const data = response.data;
             isPaginationCreated = false;
 
