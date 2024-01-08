@@ -92,7 +92,6 @@ export async function fetchBooks(userInput) {
     }
 };
 
-
 // Funzione per gestire il caso in cui non ci siano libri
 export async function noBooksFound() {
     const divSearchResults = document.querySelector('.search-results');
