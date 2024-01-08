@@ -12,20 +12,14 @@
 // 
 //***********************************************************************************************************/
 
-// -----------------------------*****IMPORTAZIONE DI MODULI E RISORSE NECESSARIE*****--------------------------------
-
-
 import '/src/sass/style.scss';  // Importa il foglio di stile Sass
 import BACKGROUND_IMG from '/src/images/background.jpg';  // Importa l'immagine di sfondo
 import { setBooks, setCurrentFocusIndex, fetchBooks } from "./fetchBooks";
 
-// Selezione dell'elemento di sfondo e impostazione della sua sorgente
 const background = document.querySelector('.background');
 background.src = BACKGROUND_IMG;
-
-
 const searchBtn = document.getElementById('search-button');
-let isSearchInProgress = false; // Variabile per controllare se la ricerca è in corso, in modo da non effettuare chiamate sovrapposte
+let isSearchInProgress = false;
 
 
 
